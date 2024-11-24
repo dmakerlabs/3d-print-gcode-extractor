@@ -1,1 +1,3 @@
 xlsxwriter
+flake8
+unittest
