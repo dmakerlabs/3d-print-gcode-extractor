@@ -3,54 +3,40 @@
 
 name: CI/CD Workflow
 
-# Controle de gatilhos para execução do workflow
 on:
-  # Executa o workflow em push ou pull request para a branch "main"
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-  # Permite executar manualmente a partir da aba Actions
   workflow_dispatch:
 
-# Define os jobs do workflow
 jobs:
-  # Job de build e teste
   build:
-    # O tipo de runner em que o job será executado
     runs-on: ubuntu-latest
 
-    # Passos para o job
     steps:
-      # Checkout do repositório
-      - name: Checkout do Código
-        uses: actions/checkout@v4
+    - name: Checkout do Código
+      uses: actions/checkout@v4
 
-      # Configuração do Python
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'  # Define a versão do Python que o projeto utiliza
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
 
-      # Instalar dependências do projeto
-      - name: Instalar Dependências
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Instalar Dependências
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-tk xvfb
+        pip install -r requirements.txt
 
-      # Verificar qualidade do código com Flake8
-      - name: Verificar Qualidade do Código
-        run: |
-          pip install flake8
-          flake8 .
+    - name: Testar Código
+      run: |
+        xvfb-run --auto-servernum python -m unittest discover
 
-      # Executar testes (caso existam)
-      - name: Executar Testes
-        run: |
-          pytest
+    - name: Verificar Qualidade do Código com Flake8
+      run: |
+        pip install flake8
+        flake8 --max-line-length=120 --exclude=.venv
 
-      # Mensagem personalizada
-      - name: Finalizar Build
-        run: echo "Workflow de CI/CD finalizado com sucesso!"
-
+    - name: Finalizar Build
+      run: echo "Build e testes finalizados com sucesso!"
