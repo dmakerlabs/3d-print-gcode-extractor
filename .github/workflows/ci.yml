@@ -33,4 +33,5 @@ jobs:
       run: python -m unittest discover
 
     - name: Verificar Qualidade do Código com Flake8
-      run: flake8 .
+      run: python -m flake8
+
