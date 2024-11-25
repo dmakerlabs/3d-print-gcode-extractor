@@ -26,9 +26,11 @@ jobs:
     - name: Instalar Dependências Python
       run: pip install -r requirements.txt
 
+    - name: Instalar Flake8 (Se necessário)
+      run: pip install flake8
+
     - name: Testar Código
       run: python -m unittest discover
 
     - name: Verificar Qualidade do Código com Flake8
-      run: flake8
-
+      run: flake8 .
